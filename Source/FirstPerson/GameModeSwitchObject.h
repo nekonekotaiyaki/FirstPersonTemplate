@@ -23,4 +23,21 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+
+    // メッシュ 
+    UPROPERTY(VisibleAnywhere, Category = "StaticMesh")
+    UStaticMeshComponent* mMeshComponent;
+
+    // マテリアル 
+    UPROPERTY(EditDefaultsOnly, Category = "Materials")
+    UMaterial* mDefaultMaterial;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Materials")
+    UMaterial* mLockedMaterial;
+
+private:
+
+
+    // フラグ 
+    bool	mIsLocked;
 };
