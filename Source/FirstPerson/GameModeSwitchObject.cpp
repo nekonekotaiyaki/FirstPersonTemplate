@@ -6,7 +6,7 @@
 #include "Materials/MaterialInstanceDynamic.h"
 #include "GameModeSwitchObjectTextPoint.h"
 
-// ƒtƒ‰ƒO 
+// ãƒ•ãƒ©ã‚° 
 #define	FLAG_TIMEATTACK	(1 << 31)
 #define	FLAG_SWITCHING	(1 << 0)
 
@@ -16,7 +16,7 @@ AGameModeSwitchObject::AGameModeSwitchObject()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	// ƒ‹[ƒgƒƒbƒVƒ…‚ğİ’è‚·‚é 
+	// ãƒ«ãƒ¼ãƒˆãƒ¡ãƒƒã‚·ãƒ¥ã‚’è¨­å®šã™ã‚‹ 
 	mMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(_TEXT("MeshComponent"));
 	RootComponent = mMeshComponent;
 
@@ -78,7 +78,7 @@ void AGameModeSwitchObject::Tick(float DeltaTime)
 	}
 }
 
-// ƒeƒLƒXƒgƒ|ƒCƒ“ƒgƒRƒ“ƒ|ƒlƒ“ƒg‚ğ•Ô‚· 
+// ãƒ†ã‚­ã‚¹ãƒˆãƒã‚¤ãƒ³ãƒˆã‚³ãƒ³ãƒãƒãƒ³ãƒˆã‚’è¿”ã™ 
 AActor *AGameModeSwitchObject::GetTextPointComp()
 {
 	TArray<AActor*> list;
@@ -96,7 +96,7 @@ AActor *AGameModeSwitchObject::GetTextPointComp()
 }
 
 
-// ƒXƒCƒbƒ`ŠJn 
+// ã‚¹ã‚¤ãƒƒãƒé–‹å§‹ 
 void AGameModeSwitchObject::StartSwitching(float period)
 {
 	if ((mFlags & FLAG_SWITCHING) == 0) {
@@ -106,7 +106,7 @@ void AGameModeSwitchObject::StartSwitching(float period)
 	}
 }
 
-// ƒXƒCƒbƒ`‚â‚ß 
+// ã‚¹ã‚¤ãƒƒãƒã‚„ã‚ 
 void AGameModeSwitchObject::StopSwitching()
 {
 	if (mFlags & FLAG_SWITCHING) {
@@ -128,7 +128,7 @@ void AGameModeSwitchObject::EndTimeAttack()
 	}
 }
 
-// ƒ^ƒCƒ€ƒAƒ^ƒbƒN—p‚ÌF‚Ö•ÏX 
+// ã‚¿ã‚¤ãƒ ã‚¢ã‚¿ãƒƒã‚¯ç”¨ã®è‰²ã¸å¤‰æ›´ 
 bool AGameModeSwitchObject::ChangeColorToTimeAttack()
 {
 	if (mMaterialHandle) {
@@ -142,7 +142,7 @@ bool AGameModeSwitchObject::ChangeColorToTimeAttack()
 	return (false);
 }
 
-// F‚ğƒfƒtƒHƒ‹ƒg‚Ì–ß‚· 
+// è‰²ã‚’ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®æˆ»ã™ 
 bool AGameModeSwitchObject::ChangeColorToDefault(float period)
 {
 	if (mMaterialHandle) {

@@ -9,7 +9,7 @@ AGameModeSwitchObjectTextPoint::AGameModeSwitchObjectTextPoint()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	// ƒ‹[ƒgƒRƒ“ƒ|[ƒlƒ“ƒg‚Ì‰Šú‰»
+	// ãƒ«ãƒ¼ãƒˆã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã®åˆæœŸåŒ–
 	mRootComp = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 	RootComponent = mRootComp;
 }

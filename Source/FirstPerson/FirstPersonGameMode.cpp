@@ -7,7 +7,7 @@
 #include "TimerManager.h"
 
 #define	SPAN	(1.0f)
-#define	SCALE	(3.0f)	// テキストスケール 
+#define	SCALE	(3.0f)	// 繝�繧ｭ繧ｹ繝医せ繧ｱ繝ｼ繝ｫ 
 
 AFirstPersonGameMode::AFirstPersonGameMode()
 	: Super()
@@ -16,7 +16,7 @@ AFirstPersonGameMode::AFirstPersonGameMode()
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnClassFinder(TEXT("/Game/FirstPerson/Blueprints/BP_FirstPersonCharacter"));
 	DefaultPawnClass = PlayerPawnClassFinder.Class;
 
-	// HUDをもらっておく 
+	// HUD繧偵ｂ繧峨▲縺ｦ縺翫￥ 
 	HUDClass = ADefaultHUD::StaticClass();
 
 	mRemainingTime = 0.0f;

@@ -37,17 +37,17 @@ private:
 	bool ChangeColorToDefault(float period);
 
 
-    // メッシュ 
+    // 繝｡繝�繧ｷ繝･ 
     UPROPERTY(VisibleAnywhere, Category = "StaticMesh")
     UStaticMeshComponent *mMeshComponent;
 
 /*
-    // マテリアル 
+    // 繝槭ユ繝ｪ繧｢繝ｫ 
     UPROPERTY(EditAnywhere, Category = "Materials")
     UMaterial *mDefaultMaterial;
 */
 
-	// カラーコントロール 
+	// 繧ｫ繝ｩ繝ｼ繧ｳ繝ｳ繝医Ο繝ｼ繝ｫ 
 	UMaterialInstanceDynamic	*mMaterialHandle;
 	float	mPeriod;
 	float	mTimer;

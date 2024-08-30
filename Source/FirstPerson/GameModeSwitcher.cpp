@@ -9,7 +9,7 @@ AGameModeSwitcher::AGameModeSwitcher()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	// ルートコンポネントの追加 
+	// 繝ｫ繝ｼ繝医さ繝ｳ繝昴ロ繝ｳ繝医�ｮ霑ｽ蜉 
 	mRootComp = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 	RootComponent = mRootComp;
 }

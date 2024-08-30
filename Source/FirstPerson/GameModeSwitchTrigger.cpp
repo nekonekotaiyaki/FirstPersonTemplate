@@ -15,7 +15,7 @@ AGameModeSwitchTrigger::AGameModeSwitchTrigger()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	// UBoxComponent ‚Ìì¬
+	// UBoxComponent ã®ä½œæˆ
 	mTriggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
 	RootComponent = mTriggerBox;
 
@@ -38,11 +38,11 @@ void AGameModeSwitchTrigger::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// eŒŸõ 
+	// è¦ªæ¤œç´¢ 
 	TArray<AActor*> list;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGameModeSwitchObject::StaticClass(), list);
 
-	// ƒeƒLƒXƒgƒ|ƒCƒ“ƒgæ“¾ 
+	// ãƒ†ã‚­ã‚¹ãƒˆãƒã‚¤ãƒ³ãƒˆå–å¾— 
 	for (AActor *a : list) {
 		AGameModeSwitchObject *parent = Cast<AGameModeSwitchObject>(a);
 		if (parent) {
@@ -82,12 +82,12 @@ void AGameModeSwitchTrigger::OnOverlapBegin(
 			if (result) {
 				UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin"));
 
-				// ƒ^ƒCƒ}[‘ª’èŠJn 
+				// ã‚¿ã‚¤ãƒãƒ¼æ¸¬å®šé–‹å§‹ 
 				FOnTimeAttackStartDelegate delegate = FOnTimeAttackStartDelegate::CreateUObject(this, &AGameModeSwitchTrigger::OnStartTimeAttack);
 				gm->SetTextLocation(screenPos);
 				gm->StartTimer(5.0f, delegate);
 
-				// F•Ï‚¦ŠJn 
+				// è‰²å¤‰ãˆé–‹å§‹ 
 				AGameModeSwitchObject *parent = Cast<AGameModeSwitchObject>(mParentObject);
 				if (parent) {
 					parent->StartSwitching(gm->SwitchingPeriod());
@@ -110,10 +110,10 @@ void AGameModeSwitchTrigger::OnOverlapEnd(
 		if (gm) {
 			UE_LOG(LogTemp, Warning, TEXT("OnOverlapEnd"));
 
-			// ƒ^ƒCƒ}[’†~ 
+			// ã‚¿ã‚¤ãƒãƒ¼ä¸­æ­¢ 
 			gm->ResetTimer();
 
-			// F•Ï‚¦’†~  
+			// è‰²å¤‰ãˆä¸­æ­¢  
 			AGameModeSwitchObject *parent = Cast<AGameModeSwitchObject>(mParentObject);
 			if (parent) {
 				parent->StopSwitching();
