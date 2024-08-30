@@ -23,4 +23,33 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+
+private:
+	UPROPERTY(VisibleAnywhere, Category = "Trigger")
+	class UBoxComponent* mTriggerBox;
+
+	UFUNCTION()
+	void OnOverlapBegin(
+		UPrimitiveComponent *overlappedComp,
+		AActor *otherActor,
+		UPrimitiveComponent *otherComp,
+		int32 otherBodyIndex,
+		bool bFromSweep,
+		const FHitResult &sweepResult);
+
+	UFUNCTION()
+	void OnOverlapEnd(
+		UPrimitiveComponent *overlappedComp,
+		AActor* otherActor,
+		UPrimitiveComponent *otherComp,
+		int32 otherBodyIndex);
+
+private:
+	UFUNCTION()
+	void OnStartTimeAttack();
+
+	AActor	*mParentObject;
+	AActor	*mTextPoint;
+
+
 };

@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "GameModeSwitcher.generated.h"
+#include "GameModeSwitchObjectTextPoint.generated.h"
 
 UCLASS()
-class FIRSTPERSON_API AGameModeSwitcher : public AActor
+class FIRSTPERSON_API AGameModeSwitchObjectTextPoint : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AGameModeSwitcher();
+	AGameModeSwitchObjectTextPoint();
 
 protected:
 	// Called when the game starts or when spawned
@@ -23,8 +23,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	USceneComponent	*mRootComp;
-
 };

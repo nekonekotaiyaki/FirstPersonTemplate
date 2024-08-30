@@ -6,6 +6,9 @@
 #include "GameFramework/GameModeBase.h"
 #include "FirstPersonGameMode.generated.h"
 
+
+DECLARE_DELEGATE(FOnTimeAttackStartDelegate);
+
 UCLASS(minimalapi)
 class AFirstPersonGameMode : public AGameModeBase
 {
@@ -13,6 +16,26 @@ class AFirstPersonGameMode : public AGameModeBase
 
 public:
 	AFirstPersonGameMode();
+
+	virtual void BeginPlay() override;
+
+	void SetTextLocation(const FVector2D &loc);
+	void StartTimer(float period, FOnTimeAttackStartDelegate delegate);
+	void ResetTimer();
+	float SwitchingPeriod();
+
+private:
+	void OnTimerUpdate();
+
+	class AHUD *mHUD;
+
+	FVector2D	mTextLocation;
+
+	bool	mIsRunning;
+	float	mSwitchingPeriod;
+	float	mRemainingTime;
+	FTimerHandle	mTimerHandle;
+	FOnTimeAttackStartDelegate	mOnTimeAttackStart;
 };
 
 

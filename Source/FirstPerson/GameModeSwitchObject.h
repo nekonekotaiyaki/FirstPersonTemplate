@@ -23,21 +23,33 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	AActor *GetTextPointComp();
+
+	void StartSwitching(float period);
+	void StopSwitching();
+
+	void StartTimeAttack();
+	void EndTimeAttack();
+
+
+private:
+	bool ChangeColorToTimeAttack();
+	bool ChangeColorToDefault(float period);
+
 
     // メッシュ 
     UPROPERTY(VisibleAnywhere, Category = "StaticMesh")
-    UStaticMeshComponent* mMeshComponent;
+    UStaticMeshComponent *mMeshComponent;
 
+/*
     // マテリアル 
-    UPROPERTY(EditDefaultsOnly, Category = "Materials")
-    UMaterial* mDefaultMaterial;
+    UPROPERTY(EditAnywhere, Category = "Materials")
+    UMaterial *mDefaultMaterial;
+*/
 
-    UPROPERTY(EditDefaultsOnly, Category = "Materials")
-    UMaterial* mLockedMaterial;
-
-private:
-
-
-    // フラグ 
-    bool	mIsLocked;
+	// カラーコントロール 
+	UMaterialInstanceDynamic	*mMaterialHandle;
+	float	mPeriod;
+	float	mTimer;
+	int	mFlags;
 };
