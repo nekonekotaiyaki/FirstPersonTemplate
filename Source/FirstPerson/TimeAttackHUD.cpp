@@ -2,6 +2,7 @@
 
 
 #include "TimeAttackHUD.h"
+
 #include "Blueprint/UserWidget.h"
 #include "Components/TextBlock.h"
 #include "Components/ProgressBar.h"
@@ -15,7 +16,6 @@ ATimeAttackHUD::ATimeAttackHUD()
 	mUIScore = nullptr;
 	mUIPowerGauge = nullptr;
 }
-
 
 void ATimeAttackHUD::BeginPlay()
 {
@@ -38,29 +38,14 @@ void ATimeAttackHUD::BeginPlay()
 		}
 	}
 }
+void ATimeAttackHUD::DrawHUD()
+{
+}
 
 
 void ATimeAttackHUD::SetRestTime(int sec, int msec)
 {
 }
-void ATimeAttackHUD::SetHigh(int high)
-{
-	if (mUIHighScore) {
-		FString text = FString::Printf(TEXT("%03d"), high);
-		mUIHighScore->SetText(FText::FromString(text));
-	}
-}
 
-void ATimeAttackHUD::SetScore(int score)
-{
-	if (mUIScore) {
-		FString text = FString::Printf(TEXT("%03d"), score);
-		mUIScore->SetText(FText::FromString(text));
-	}
-}
-void ATimeAttackHUD::SetPower(float percent)
-{
-	if (mUIPowerGauge) {
-		mUIPowerGauge->SetPercent(percent);
-	}
-}
+
+
