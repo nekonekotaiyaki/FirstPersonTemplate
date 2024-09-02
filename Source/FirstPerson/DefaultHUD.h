@@ -17,14 +17,31 @@ class FIRSTPERSON_API ADefaultHUD : public AHUD
 public:
 	ADefaultHUD();
 
+	virtual void BeginPlay() override;
 	virtual void DrawHUD() override;
 
-	void SetVisible(bool f);
+	void SetSwitchingTimeVisible(bool f);
 	void SetSwitchingTime(const FString &text, const FVector2D &pos, float scale);
 
+	void SetHigh(int high);
+	void SetScore(int score);
+	void SetPower(float percent);
+
+	int GetDefaultHighScore();
+
 private:
-	FString	mText;
-	FVector2D	mTextPos;
-	float	mTextScale;
-	bool	mIsVisible;
+
+	// スイッチカウント 
+	FString	mSwitchingCountText;
+	FVector2D	mSwitchingCountTextPos;
+	float	mSwitchingCountTextScale;
+	bool	mIsSwitchingCountVisible;
+
+protected:
+	
+	// ウィジェットブループリント 
+	class UTextBlock	*mUIHighScore;
+	class UTextBlock	*mUIScore;
+	class UProgressBar	*mUIPowerGauge;
+
 };

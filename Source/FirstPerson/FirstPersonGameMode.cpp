@@ -2,9 +2,11 @@
 
 #include "FirstPersonGameMode.h"
 #include "FirstPersonCharacter.h"
-#include "UObject/ConstructorHelpers.h"
-#include "DefaultHUD.h"
+//#include "UObject/ConstructorHelpers.h"
+#include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
+#include "DefaultHUD.h"
+#include "FirstPersonGameInstance.h"
 
 #define	SPAN	(1.0f)
 #define	SCALE	(3.0f)	// テキストスケール 
@@ -22,6 +24,7 @@ AFirstPersonGameMode::AFirstPersonGameMode()
 	mRemainingTime = 0.0f;
 	mSwitchingPeriod = 0.0f;
 	mIsRunning = false;
+	mHUD = nullptr;
 }
 
 
@@ -32,6 +35,20 @@ void AFirstPersonGameMode::BeginPlay()
 	APlayerController* p = GetWorld()->GetFirstPlayerController();
 	if (p) {
 		mHUD = p->GetHUD();
+	}
+
+	// 表示初期化 
+	UFirstPersonGameInstance *gameInst = Cast<UFirstPersonGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (gameInst) {
+		ADefaultHUD *hud = Cast<ADefaultHUD>(mHUD);
+		if (hud) {
+			int defHigh = hud->GetDefaultHighScore();
+			if (gameInst->High() < defHigh) {
+				gameInst->SetHighScore(defHigh);
+			}
+			hud->SetScore(gameInst->Score());
+			hud->SetHigh(gameInst->High());
+		}
 	}
 }
 
@@ -56,7 +73,7 @@ void AFirstPersonGameMode::StartTimer(float period, FOnTimeAttackStartDelegate d
 
 		ADefaultHUD *hud = Cast<ADefaultHUD>(mHUD);
 		if (hud) {
-			hud->SetVisible(true);
+			hud->SetSwitchingTimeVisible(true);
 			hud->SetSwitchingTime(
 				FString::FromInt((int32)mRemainingTime),
 				mTextLocation,
@@ -72,7 +89,7 @@ void AFirstPersonGameMode::ResetTimer()
 
 		ADefaultHUD *hud = Cast<ADefaultHUD>(mHUD);
 		if (hud) {
-			hud->SetVisible(false);
+			hud->SetSwitchingTimeVisible(false);
 		}
 	}
 }
@@ -81,6 +98,7 @@ float AFirstPersonGameMode::SwitchingPeriod()
 {
 	return (mSwitchingPeriod);
 }
+
 
 
 void AFirstPersonGameMode::OnTimerUpdate()

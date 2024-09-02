@@ -9,6 +9,11 @@
 #include "GameModeSwitchObject.h"
 #include "GameModeSwitchObjectTextPoint.h"
 
+#define	PERIOD_SWITCH		(3.0f)
+#define	PERIOD_TIMEATTACK	(10.0f)
+
+
+
 // Sets default values
 AGameModeSwitchTrigger::AGameModeSwitchTrigger()
 {
@@ -31,12 +36,18 @@ AGameModeSwitchTrigger::AGameModeSwitchTrigger()
 
 	mParentObject = nullptr;
 	mTextPoint = nullptr;
+	mDefaultGameMode = nullptr;
 }
 
 // Called when the game starts or when spawned
 void AGameModeSwitchTrigger::BeginPlay()
 {
 	Super::BeginPlay();
+
+	mPC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	if (mPC) {
+		mDefaultGameMode = UGameplayStatics::GetGameMode(GetWorld());
+	}
 
 	// 親検索 
 	TArray<AActor*> list;
@@ -71,21 +82,18 @@ void AGameModeSwitchTrigger::OnOverlapBegin(
 	bool bFromSweep,
 	const FHitResult &sweepResult)
 {
-	APlayerController *p = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	if (p) {
-		AFirstPersonGameMode *gm = Cast<AFirstPersonGameMode>(
-			UGameplayStatics::GetGameMode(GetWorld()));
- 		if (gm && mTextPoint) {
+	if (mDefaultGameMode && mTextPoint) {
+		AFirstPersonGameMode *gm = Cast<AFirstPersonGameMode>(mDefaultGameMode);
+		if (gm) {
 			FVector loc = mTextPoint->GetActorLocation();
 			FVector2D screenPos;
-			bool result = p->ProjectWorldLocationToScreen(loc, screenPos);
+			bool result = mPC->ProjectWorldLocationToScreen(loc, screenPos);
 			if (result) {
-				UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin"));
 
 				// タイマー測定開始 
 				FOnTimeAttackStartDelegate delegate = FOnTimeAttackStartDelegate::CreateUObject(this, &AGameModeSwitchTrigger::OnStartTimeAttack);
 				gm->SetTextLocation(screenPos);
-				gm->StartTimer(5.0f, delegate);
+				gm->StartTimer(PERIOD_SWITCH, delegate);
 
 				// 色変え開始 
 				AGameModeSwitchObject *parent = Cast<AGameModeSwitchObject>(mParentObject);
@@ -95,6 +103,7 @@ void AGameModeSwitchTrigger::OnOverlapBegin(
 			}
 		}
 	}
+	UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin"));
 }
 
 void AGameModeSwitchTrigger::OnOverlapEnd(
@@ -103,12 +112,9 @@ void AGameModeSwitchTrigger::OnOverlapEnd(
 	UPrimitiveComponent *otherComp,
 	int32 otherBodyIndex)
 {
-	APlayerController *p = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	if (p) {
-		AFirstPersonGameMode *gm = Cast<AFirstPersonGameMode>(
-			UGameplayStatics::GetGameMode(GetWorld()));
+	if (mDefaultGameMode) {
+		AFirstPersonGameMode *gm = Cast<AFirstPersonGameMode>(mDefaultGameMode);
 		if (gm) {
-			UE_LOG(LogTemp, Warning, TEXT("OnOverlapEnd"));
 
 			// タイマー中止 
 			gm->ResetTimer();
@@ -120,10 +126,18 @@ void AGameModeSwitchTrigger::OnOverlapEnd(
 			}
 		}
 	}
+	UE_LOG(LogTemp, Warning, TEXT("OnOverlapEnd"));
 }
 
 void AGameModeSwitchTrigger::OnStartTimeAttack()
 {
+
 	UE_LOG(LogTemp, Warning, TEXT("OnStartTimeAttack"));
 }
+void AGameModeSwitchTrigger::OnEndTimeAttack()
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnEndTimeAttack"));
+}
+
+
 

@@ -13,5 +13,25 @@ UCLASS()
 class FIRSTPERSON_API ATimeAttackHUD : public AHUD
 {
 	GENERATED_BODY()
+
+public:
+	ATimeAttackHUD();
+
+	void BeginPlay() override;
+
+	void SetRestTime(int sec, int msec);
+	void SetScore(int score);
+	void SetHigh(int high);
+	void SetPower(float percent);
+
+
+private:
 	
+	// ウィジェットブループリント 
+	class UTextBlock *mUITimerMsec;
+	class UTextBlock *mUITimerSec;
+	class UTextBlock *mUIHighScore;
+	class UTextBlock *mUIScore;
+	class UProgressBar *mUIPowerGauge;
+
 };

@@ -24,6 +24,8 @@ public:
 	void ResetTimer();
 	float SwitchingPeriod();
 
+	void SwitchToTimeAttack(float period, FOnTimeAttackStartDelegate delegate);
+
 private:
 	void OnTimerUpdate();
 

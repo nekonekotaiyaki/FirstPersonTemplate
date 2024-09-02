@@ -48,8 +48,13 @@ private:
 	UFUNCTION()
 	void OnStartTimeAttack();
 
+	UFUNCTION()
+	void OnEndTimeAttack();
+
 	AActor	*mParentObject;
 	AActor	*mTextPoint;
 
+	AGameModeBase	*mDefaultGameMode;
+	APlayerController	*mPC;
 
 };

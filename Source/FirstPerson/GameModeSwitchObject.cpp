@@ -23,6 +23,7 @@ AGameModeSwitchObject::AGameModeSwitchObject()
 	mMaterialHandle = nullptr;
 	mFlags = 0;
 	mTimer = 0.0f;
+	mIsTimeAttackMode = false;
 }
 
 // Called when the game starts or when spawned
@@ -52,11 +53,17 @@ void AGameModeSwitchObject::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// タイムアタック中は何もしない 
+	if (mIsTimeAttackMode) {
+		return;
+	}
+
 	if ((mFlags & FLAG_TIMEATTACK) == 0) {	
 		if (mFlags & FLAG_SWITCHING) {
 			bool result = ChangeColorToTimeAttack();
 			if (result) {
 				mFlags &= ~FLAG_SWITCHING;
+				mFlags |= FLAG_TIMEATTACK;
 			}
 			else {
 				mTimer += DeltaTime;
@@ -64,15 +71,6 @@ void AGameModeSwitchObject::Tick(float DeltaTime)
 		}
 		else {
 			ChangeColorToDefault(1.0f);
-			mTimer += DeltaTime;
-		}
-	}
-	else {
-		bool result = ChangeColorToDefault(1.0f);
-		if (result) {
-			mFlags &= ~FLAG_TIMEATTACK;
-		}
-		else {
 			mTimer += DeltaTime;
 		}
 	}
@@ -95,6 +93,16 @@ AActor *AGameModeSwitchObject::GetTextPointComp()
 	return (nullptr);
 }
 
+// タイムアタックゲームモードかどうか 
+void AGameModeSwitchObject::SetTimeAttackMode()
+{
+	mIsTimeAttackMode = true;
+	if (mMaterialHandle) {
+		mMaterialHandle->SetVectorParameterValue(FName("EmissiveColor"), FLinearColor::Red);
+	}
+}
+
+
 
 // スイッチ開始 
 void AGameModeSwitchObject::StartSwitching(float period)
@@ -112,19 +120,6 @@ void AGameModeSwitchObject::StopSwitching()
 	if (mFlags & FLAG_SWITCHING) {
 		mFlags &= ~FLAG_SWITCHING;
 		mTimer = 0.0f;
-	}
-}
-
-void AGameModeSwitchObject::StartTimeAttack()
-{
-	if ((mFlags & FLAG_TIMEATTACK) == 0) {
-		mFlags |= FLAG_TIMEATTACK;
-	}
-}
-void AGameModeSwitchObject::EndTimeAttack()
-{
-	if (mFlags & FLAG_TIMEATTACK) {
-		mFlags &= ~FLAG_TIMEATTACK;
 	}
 }
 

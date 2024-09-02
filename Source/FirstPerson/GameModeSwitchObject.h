@@ -27,10 +27,7 @@ public:
 
 	void StartSwitching(float period);
 	void StopSwitching();
-
-	void StartTimeAttack();
-	void EndTimeAttack();
-
+	void SetTimeAttackMode();
 
 private:
 	bool ChangeColorToTimeAttack();
@@ -41,15 +38,12 @@ private:
     UPROPERTY(VisibleAnywhere, Category = "StaticMesh")
     UStaticMeshComponent *mMeshComponent;
 
-/*
-    // マテリアル 
-    UPROPERTY(EditAnywhere, Category = "Materials")
-    UMaterial *mDefaultMaterial;
-*/
-
 	// カラーコントロール 
 	UMaterialInstanceDynamic	*mMaterialHandle;
 	float	mPeriod;
 	float	mTimer;
 	int	mFlags;
+
+	// モード 
+	bool	mIsTimeAttackMode;
 };
