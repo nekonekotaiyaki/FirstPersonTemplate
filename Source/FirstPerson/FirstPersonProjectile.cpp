@@ -29,6 +29,12 @@ AFirstPersonProjectile::AFirstPersonProjectile()
 
 	// Die after 3 seconds by default
 	InitialLifeSpan = 3.0f;
+
+	// タイムアタックゲームモード 
+	mIsTimeAttackMode = false;
+
+	// スーパー弾丸 
+	mIsSuperProjectile = false;
 }
 
 void AFirstPersonProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
@@ -36,8 +42,39 @@ void AFirstPersonProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherAc
 	// Only add impulse and destroy projectile if we hit a physics
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
 	{
-		OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
+		if (mIsSuperProjectile) {
 
-		Destroy();
+		}
+		else {
+			OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
+			Destroy();
+		}
+
+		// スコア 
+		if (mIsTimeAttackMode) {
+			if (OtherActor->Tags.Contains(mScoringTagName)) {
+				if (mOnGetScore.IsBound()) {
+					mOnGetScore.Execute();
+				}
+			}
+		}
 	}
+}
+
+
+void AFirstPersonProjectile::SetTimeAttackMode(bool f)
+{
+	mIsTimeAttackMode = f;
+}
+void AFirstPersonProjectile::SetSuperProjectileMode(bool f)
+{
+	mIsSuperProjectile = f;
+}
+void AFirstPersonProjectile::SetScoringTagName(FName name)
+{
+	mScoringTagName = name;
+}
+void AFirstPersonProjectile::SetOnGetScore(FOnGetScoreDelegate delegate)
+{
+	mOnGetScore = delegate;
 }

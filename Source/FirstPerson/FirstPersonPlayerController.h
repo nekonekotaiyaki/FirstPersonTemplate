@@ -8,6 +8,7 @@
 
 class UInputMappingContext;
 
+
 /**
  *
  */
@@ -15,6 +16,11 @@ UCLASS()
 class FIRSTPERSON_API AFirstPersonPlayerController : public APlayerController
 {
 	GENERATED_BODY()
+
+public:
+	AFirstPersonPlayerController();
+
+	bool IsTimeAttackMode();
 	
 protected:
 
@@ -28,4 +34,8 @@ protected:
 	virtual void BeginPlay() override;
 
 	// End Actor interface
+
+
+private:
+	bool	mIsTimeAttackMode;
 };

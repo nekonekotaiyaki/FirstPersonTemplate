@@ -7,8 +7,9 @@
 #include "GameModeSwitchObjectTextPoint.h"
 
 // フラグ 
-#define	FLAG_TIMEATTACK	(1 << 31)
-#define	FLAG_SWITCHING	(1 << 0)
+#define	FLAG_TIMEATTACK			(1 << 31)
+#define	FLAG_SWITCHING_GREEN	(1 << 1)
+#define	FLAG_SWITCHING_RED		(1 << 0)
 
 // Sets default values
 AGameModeSwitchObject::AGameModeSwitchObject()
@@ -59,19 +60,25 @@ void AGameModeSwitchObject::Tick(float DeltaTime)
 	}
 
 	if ((mFlags & FLAG_TIMEATTACK) == 0) {	
-		if (mFlags & FLAG_SWITCHING) {
+		if (mFlags & FLAG_SWITCHING_RED) {
 			bool result = ChangeColorToTimeAttack();
 			if (result) {
-				mFlags &= ~FLAG_SWITCHING;
+				mFlags &= ~FLAG_SWITCHING_RED;
 				mFlags |= FLAG_TIMEATTACK;
 			}
 			else {
 				mTimer += DeltaTime;
 			}
 		}
-		else {
-			ChangeColorToDefault(1.0f);
-			mTimer += DeltaTime;
+		else if (mFlags & FLAG_SWITCHING_GREEN) {
+			bool result = ChangeColorToDefault();
+			if (result) {
+				mFlags &= ~FLAG_SWITCHING_GREEN;
+				mTimer = 0.0f;
+			}
+			else {
+				mTimer -= DeltaTime;
+			}
 		}
 	}
 }
@@ -107,8 +114,8 @@ void AGameModeSwitchObject::SetTimeAttackMode()
 // スイッチ開始 
 void AGameModeSwitchObject::StartSwitching(float period)
 {
-	if ((mFlags & FLAG_SWITCHING) == 0) {
-		mFlags |= FLAG_SWITCHING;
+	if ((mFlags & FLAG_SWITCHING_RED) == 0) {
+		mFlags |= FLAG_SWITCHING_RED;
 		mPeriod = (period <= 0.0f) ? 1.0f : period;
 		mTimer = 0.0f;
 	}
@@ -117,9 +124,10 @@ void AGameModeSwitchObject::StartSwitching(float period)
 // スイッチやめ 
 void AGameModeSwitchObject::StopSwitching()
 {
-	if (mFlags & FLAG_SWITCHING) {
-		mFlags &= ~FLAG_SWITCHING;
-		mTimer = 0.0f;
+	if (mFlags & FLAG_SWITCHING_RED) {
+		mFlags &= ~FLAG_SWITCHING_RED;
+		mFlags |= FLAG_SWITCHING_GREEN;
+		mTimer = mTimer / mPeriod;
 	}
 }
 
@@ -138,17 +146,16 @@ bool AGameModeSwitchObject::ChangeColorToTimeAttack()
 }
 
 // 色をデフォルトの戻す 
-bool AGameModeSwitchObject::ChangeColorToDefault(float period)
+bool AGameModeSwitchObject::ChangeColorToDefault()
 {
 	if (mMaterialHandle) {
-		period = (period <= 0.0f) ? 1.0f : period;
-
-		float scalar = FMath::Clamp(mTimer / period, 0.0f, 1.0f);
-		FLinearColor target = FLinearColor::Green;
-		FLinearColor start = FLinearColor::Red;
+		float scalar = FMath::Clamp(mTimer / 1.0f, 0.0f, 1.0f);
+		FLinearColor target = FLinearColor::Red;
+		FLinearColor start = FLinearColor::Green;
 		FLinearColor current = FMath::Lerp(start, target, scalar);
 		mMaterialHandle->SetVectorParameterValue(FName("EmissiveColor"), current);
-		return (scalar >= 1.0f);
+		UE_LOG(LogTemp, Warning, TEXT("scalar=%f"), scalar);
+		return (scalar <= 0.0f);
 	}
 	return (false);
 }

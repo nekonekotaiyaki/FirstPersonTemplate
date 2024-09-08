@@ -31,7 +31,7 @@ public:
 
 private:
 	bool ChangeColorToTimeAttack();
-	bool ChangeColorToDefault(float period);
+	bool ChangeColorToDefault();
 
 
     // メッシュ 

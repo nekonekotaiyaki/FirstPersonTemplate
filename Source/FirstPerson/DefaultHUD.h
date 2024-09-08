@@ -6,6 +6,9 @@
 #include "GameFramework/HUD.h"
 #include "DefaultHUD.generated.h"
 
+
+DECLARE_DELEGATE(FOnFadeOutDelegate);
+
 /**
  * 
  */
@@ -29,19 +32,36 @@ public:
 
 	int GetDefaultHighScore();
 
+	void StartFadeOut(float duration, FOnFadeOutDelegate delegate);
+
 private:
 
 	// スイッチカウント 
-	FString	mSwitchingCountText;
+	FString		mSwitchingCountText;
 	FVector2D	mSwitchingCountTextPos;
 	float	mSwitchingCountTextScale;
 	bool	mIsSwitchingCountVisible;
 
+
 protected:
+
+
+	UFUNCTION()
+	void OnUpdateFade();
+
+
 	
 	// ウィジェットブループリント 
+	class UTextBlock	*mUITimerSec;
+	class UTextBlock	*mUITimerMsec;
 	class UTextBlock	*mUIHighScore;
 	class UTextBlock	*mUIScore;
 	class UProgressBar	*mUIPowerGauge;
+	class UImage		*mUIFadeImage;
+
+	float	mFadeSpeed;
+	FTimerHandle	mTimerHandle;
+	FOnFadeOutDelegate	mOnFadeOut;
+
 
 };

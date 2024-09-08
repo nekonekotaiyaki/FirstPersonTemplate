@@ -12,6 +12,8 @@
 #include "Animation/AnimInstance.h"
 #include "Engine/LocalPlayer.h"
 #include "Engine/World.h"
+#include "FirstPersonPlayerController.h"
+#include "TimeAttackGameMode.h"
 
 // Sets default values for this component's properties
 UTP_WeaponComponent::UTP_WeaponComponent()
@@ -44,7 +46,21 @@ void UTP_WeaponComponent::Fire()
 			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 	
 			// Spawn the projectile at the muzzle
-			World->SpawnActor<AFirstPersonProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+			AFirstPersonProjectile *projectile = World->SpawnActor<AFirstPersonProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+			if (projectile) {
+				AFirstPersonPlayerController *pc = Cast<AFirstPersonPlayerController>(PlayerController);
+				bool isTimeAttackMode = (pc) ? pc->IsTimeAttackMode() : false;
+				projectile->SetTimeAttackMode(isTimeAttackMode);
+
+				// コールバック設定 
+				AGameModeBase *gm = World->GetAuthGameMode();
+				if (gm) {
+					ATimeAttackGameMode *timeAttack = Cast<ATimeAttackGameMode>(gm);
+					if (timeAttack) {
+						timeAttack->SetOnGetScoreCallback(projectile);
+					}
+				}
+			}
 		}
 	}
 	

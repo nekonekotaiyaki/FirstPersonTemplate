@@ -5,8 +5,12 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/TextBlock.h"
 #include "Components/ProgressBar.h"
+#include "Components/Image.h"
+#include "Kismet/GameplayStatics.h"
+#include "FirstPersonGameInstance.h"
 
-#define	HIGH_SCORE_DEFAULT	(100)
+#define	HIGH_SCORE_DEFAULT	(20)
+#define	UPDATE_SPEED		(1.0f / 60.0f)
 
 ADefaultHUD::ADefaultHUD()
 {
@@ -14,10 +18,15 @@ ADefaultHUD::ADefaultHUD()
 	mIsSwitchingCountVisible = false;
 
 	// ウィジェットブループリント 
+	mUITimerSec = nullptr;
+	mUITimerMsec = nullptr;
 	mUIHighScore = nullptr;
 	mUIScore = nullptr;
 	mUIPowerGauge = nullptr;
+	mUIFadeImage = nullptr;
 
+
+	mFadeSpeed = 0.0f;
 }
 
 void ADefaultHUD::BeginPlay()
@@ -33,10 +42,35 @@ void ADefaultHUD::BeginPlay()
 			p->AddToViewport();
 
 			// 取り出しておく 
+			mUITimerSec = Cast<UTextBlock>(p->GetWidgetFromName(TEXT("TimerSec")));
+			mUITimerMsec = Cast<UTextBlock>(p->GetWidgetFromName(TEXT("TimerMsec")));
 			mUIHighScore = Cast<UTextBlock>(p->GetWidgetFromName(TEXT("HighScore")));
 			mUIScore = Cast<UTextBlock>(p->GetWidgetFromName(TEXT("Score")));
 			mUIPowerGauge = Cast<UProgressBar>(p->GetWidgetFromName(TEXT("PowerGauge")));
+			mUIFadeImage = Cast<UImage>(p->GetWidgetFromName(TEXT("FadeImage")));
 		}
+	}
+
+	// 非表示 
+	if (mUITimerSec) {
+		mUITimerSec->SetVisibility(ESlateVisibility::Hidden);
+	}
+	if (mUITimerMsec) {
+		mUITimerMsec->SetVisibility(ESlateVisibility::Hidden);
+	}
+	if (mUIFadeImage) {
+		mUIFadeImage->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+
+	// 表示初期化 
+	UFirstPersonGameInstance *gameInst = Cast<UFirstPersonGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (gameInst) {
+		if (gameInst->High() < HIGH_SCORE_DEFAULT) {
+			gameInst->SetHighScore(HIGH_SCORE_DEFAULT);
+		}
+		SetScore(gameInst->Score());
+		SetHigh(gameInst->High());
 	}
 	UE_LOG(LogTemp, Warning, TEXT("ADefaultHUD::BeginPlay!"));
 }
@@ -94,5 +128,38 @@ void ADefaultHUD::SetPower(float percent)
 int ADefaultHUD::GetDefaultHighScore()
 {
 	return (HIGH_SCORE_DEFAULT);
+}
+
+void ADefaultHUD::StartFadeOut(float duration, FOnFadeOutDelegate delegate)
+{
+	if (mUIFadeImage) {
+		mUIFadeImage->SetVisibility(ESlateVisibility::Visible);
+		mFadeSpeed = 1.0f / duration;
+		mOnFadeOut = delegate;
+
+		// タイマーで色を変化させる（フェードアウト処理）
+		GetWorld()->GetTimerManager().SetTimer(
+			mTimerHandle,
+			this,
+			&ADefaultHUD::OnUpdateFade,
+			UPDATE_SPEED,
+			true);
+	}
+}
+
+void ADefaultHUD::OnUpdateFade()
+{
+	if (mUIFadeImage) {
+		FLinearColor color = mUIFadeImage->ColorAndOpacity;
+		color.A += (mFadeSpeed * UPDATE_SPEED);
+		color.A = FMath::Clamp(color.A, 0.0f, 1.0f);
+		mUIFadeImage->SetColorAndOpacity(color);
+		if (color.A == 1.0f) {
+			GetWorld()->GetTimerManager().ClearTimer(mTimerHandle);
+			if (mOnFadeOut.IsBound()) {
+				mOnFadeOut.Execute();
+			}
+		}
+	}
 }
 

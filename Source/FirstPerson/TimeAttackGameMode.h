@@ -6,7 +6,6 @@
 #include "GameFramework/GameMode.h"
 #include "TimeAttackGameMode.generated.h"
 
-
 /**
  * 
  */
@@ -20,15 +19,26 @@ public:
 
 	virtual void BeginPlay() override;
 
+
+	FName ScoringTagName();
+
+	void SetOnGetScoreCallback(AActor *actor);
+
 private:
 	int GetSec();
 	int GetMsec();
 	void OnTimerUpdate();
 
+	UFUNCTION()
+	void OnGetScore();
+
+	UFUNCTION()
+	void OnEndFadeOut();
+
 	AHUD	*mHUD;
 
-	float	mTimeAttackPeriod;
 	float	mRemainingTime;
 	FTimerHandle	mTimerHandle;
 
+	FName	mScoringTagName;
 };

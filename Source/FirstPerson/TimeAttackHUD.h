@@ -21,8 +21,4 @@ public:
 
 	void SetRestTime(int sec, int msec);
 
-private:
-	class UTextBlock *mUITimerMsec;
-	class UTextBlock *mUITimerSec;
-
 };

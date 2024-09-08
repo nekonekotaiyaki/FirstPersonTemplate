@@ -2,14 +2,14 @@
 
 #include "FirstPersonGameMode.h"
 #include "FirstPersonCharacter.h"
-//#include "UObject/ConstructorHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 #include "DefaultHUD.h"
 #include "FirstPersonGameInstance.h"
 
-#define	SPAN	(1.0f)
-#define	SCALE	(3.0f)	// テキストスケール 
+#define	SPAN			(1.0f)
+#define	SCALE			(3.0f)	// テキストスケール 
+#define	FADE_DURATION	(0.5f)
 
 AFirstPersonGameMode::AFirstPersonGameMode()
 	: Super()
@@ -25,6 +25,8 @@ AFirstPersonGameMode::AFirstPersonGameMode()
 	mSwitchingPeriod = 0.0f;
 	mIsRunning = false;
 	mHUD = nullptr;
+
+	UE_LOG(LogTemp, Warning, TEXT("AFristPersonGameMode::constructor"));
 }
 
 
@@ -36,20 +38,8 @@ void AFirstPersonGameMode::BeginPlay()
 	if (p) {
 		mHUD = p->GetHUD();
 	}
-
-	// 表示初期化 
-	UFirstPersonGameInstance *gameInst = Cast<UFirstPersonGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	if (gameInst) {
-		ADefaultHUD *hud = Cast<ADefaultHUD>(mHUD);
-		if (hud) {
-			int defHigh = hud->GetDefaultHighScore();
-			if (gameInst->High() < defHigh) {
-				gameInst->SetHighScore(defHigh);
-			}
-			hud->SetScore(gameInst->Score());
-			hud->SetHigh(gameInst->High());
-		}
-	}
+	
+	UE_LOG(LogTemp, Warning, TEXT("AFristPersonGameMode::BeginPlay"));
 }
 
 void AFirstPersonGameMode::SetTextLocation(const FVector2D &loc)
@@ -99,6 +89,16 @@ float AFirstPersonGameMode::SwitchingPeriod()
 	return (mSwitchingPeriod);
 }
 
+void AFirstPersonGameMode::GotoTimeAttackGameMode()
+{
+	if (mHUD) {
+		ADefaultHUD *hud = Cast<ADefaultHUD>(mHUD);
+		if (hud) {
+			FOnFadeOutDelegate delegate = FOnFadeOutDelegate::CreateUObject(this, &AFirstPersonGameMode::OnEndFadeOut);
+			hud->StartFadeOut(FADE_DURATION, delegate);
+		}
+	}
+}
 
 
 void AFirstPersonGameMode::OnTimerUpdate()
@@ -118,5 +118,9 @@ void AFirstPersonGameMode::OnTimerUpdate()
 			mTextLocation,
 			SCALE);
 	}
-
+}
+void AFirstPersonGameMode::OnEndFadeOut()
+{
+	FName mapName = TEXT("/Game/FirstPerson/Maps/FirstPersonTimeAttackMap");
+	UGameplayStatics::OpenLevel(GetWorld(), mapName);
 }

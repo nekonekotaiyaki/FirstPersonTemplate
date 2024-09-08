@@ -24,10 +24,13 @@ public:
 	void ResetTimer();
 	float SwitchingPeriod();
 
-	void SwitchToTimeAttack(float period, FOnTimeAttackStartDelegate delegate);
+	void GotoTimeAttackGameMode();
 
 private:
 	void OnTimerUpdate();
+
+	UFUNCTION()
+	void OnEndFadeOut();
 
 	class AHUD *mHUD;
 

@@ -9,6 +9,9 @@
 class USphereComponent;
 class UProjectileMovementComponent;
 
+DECLARE_DELEGATE(FOnGetScoreDelegate);
+
+
 UCLASS(config=Game)
 class AFirstPersonProjectile : public AActor
 {
@@ -33,5 +36,17 @@ public:
 	USphereComponent* GetCollisionComp() const { return CollisionComp; }
 	/** Returns ProjectileMovement subobject **/
 	UProjectileMovementComponent* GetProjectileMovement() const { return ProjectileMovement; }
+
+
+	void SetTimeAttackMode(bool f);
+	void SetSuperProjectileMode(bool f);
+	void SetScoringTagName(FName name);
+	void SetOnGetScore(FOnGetScoreDelegate delegate);
+
+private:
+	bool	mIsTimeAttackMode;
+	bool	mIsSuperProjectile;
+	FName	mScoringTagName;
+	FOnGetScoreDelegate	mOnGetScore;
 };
 

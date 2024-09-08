@@ -36,7 +36,7 @@ AGameModeSwitchTrigger::AGameModeSwitchTrigger()
 
 	mParentObject = nullptr;
 	mTextPoint = nullptr;
-	mDefaultGameMode = nullptr;
+	mGameMode = nullptr;
 }
 
 // Called when the game starts or when spawned
@@ -46,7 +46,7 @@ void AGameModeSwitchTrigger::BeginPlay()
 
 	mPC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	if (mPC) {
-		mDefaultGameMode = UGameplayStatics::GetGameMode(GetWorld());
+		mGameMode = UGameplayStatics::GetGameMode(GetWorld());
 	}
 
 	// 親検索 
@@ -82,8 +82,8 @@ void AGameModeSwitchTrigger::OnOverlapBegin(
 	bool bFromSweep,
 	const FHitResult &sweepResult)
 {
-	if (mDefaultGameMode && mTextPoint) {
-		AFirstPersonGameMode *gm = Cast<AFirstPersonGameMode>(mDefaultGameMode);
+	if (mGameMode && mTextPoint) {
+		AFirstPersonGameMode *gm = Cast<AFirstPersonGameMode>(mGameMode);
 		if (gm) {
 			FVector loc = mTextPoint->GetActorLocation();
 			FVector2D screenPos;
@@ -112,8 +112,8 @@ void AGameModeSwitchTrigger::OnOverlapEnd(
 	UPrimitiveComponent *otherComp,
 	int32 otherBodyIndex)
 {
-	if (mDefaultGameMode) {
-		AFirstPersonGameMode *gm = Cast<AFirstPersonGameMode>(mDefaultGameMode);
+	if (mGameMode) {
+		AFirstPersonGameMode *gm = Cast<AFirstPersonGameMode>(mGameMode);
 		if (gm) {
 
 			// タイマー中止 
@@ -131,12 +131,14 @@ void AGameModeSwitchTrigger::OnOverlapEnd(
 
 void AGameModeSwitchTrigger::OnStartTimeAttack()
 {
-
+	if (mGameMode) {
+		AFirstPersonGameMode *gm = Cast<AFirstPersonGameMode>(mGameMode);
+		if (gm) {
+			UE_LOG(LogTemp, Warning, TEXT("OnStartTimeAttack!!!!!!"));
+			gm->GotoTimeAttackGameMode();
+		}
+	}
 	UE_LOG(LogTemp, Warning, TEXT("OnStartTimeAttack"));
-}
-void AGameModeSwitchTrigger::OnEndTimeAttack()
-{
-	UE_LOG(LogTemp, Warning, TEXT("OnEndTimeAttack"));
 }
 
 
