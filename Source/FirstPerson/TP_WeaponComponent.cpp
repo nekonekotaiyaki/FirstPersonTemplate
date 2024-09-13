@@ -14,6 +14,9 @@
 #include "Engine/World.h"
 #include "FirstPersonPlayerController.h"
 #include "TimeAttackGameMode.h"
+#include "TimerManager.h"
+
+#define	BOOST_TIMER_SPEED		(1.0f / 60.0f)
 
 // Sets default values for this component's properties
 UTP_WeaponComponent::UTP_WeaponComponent()
@@ -112,6 +115,11 @@ bool UTP_WeaponComponent::AttachWeapon(AFirstPersonCharacter* TargetCharacter)
 		{
 			// Fire
 			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &UTP_WeaponComponent::Fire);
+
+			// BoostFire
+			EnhancedInputComponent->BindAction(BoostAction, ETriggerEvent::Started, this, &UTP_WeaponComponent::OnBoostButtonPressed);
+			EnhancedInputComponent->BindAction(BoostAction, ETriggerEvent::Completed, this, &UTP_WeaponComponent::OnBoostButtonReleased);
+			EnhancedInputComponent->BindAction(BoostAction, ETriggerEvent::Canceled, this, &UTP_WeaponComponent::OnBoostButtonReleased);
 		}
 	}
 
@@ -131,5 +139,134 @@ void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		{
 			Subsystem->RemoveMappingContext(FireMappingContext);
 		}
+	}
+}
+
+void UTP_WeaponComponent::BoostFire()
+{
+	if (Character == nullptr || Character->GetController() == nullptr)
+	{
+		return;
+	}
+
+	// Try and fire a projectile
+	if (ProjectileClass != nullptr)
+	{
+		UWorld *const World = GetWorld();
+		if (World != nullptr)
+		{
+			// 溜めた値で弾数を決める 
+			mNumBoostShots = FMath::CeilToInt(mBoostPower * 10.0f);
+			
+			// スポーン時に衝突するのでタイミングをずらす 
+			const float GAP = 0.05f;
+			World->GetTimerManager().SetTimer(
+				mBoostShotTimerHandle,
+				this,
+				&UTP_WeaponComponent::OnUpdateBoostShot,
+				GAP,
+				true);
+		}
+	}
+}
+void UTP_WeaponComponent::OnBoostButtonPressed()
+{
+	mIsBoostRunning = true;
+	mBoostStartTime = GetWorld()->GetTimeSeconds();
+	GetWorld()->GetTimerManager().SetTimer(
+		mBoostTimerHandle,
+		this,
+		&UTP_WeaponComponent::OnUpdateBoost,
+		BOOST_TIMER_SPEED,
+		true);
+	UE_LOG(LogTemp, Warning, TEXT("OnBoostButtonPressed"));
+}
+void UTP_WeaponComponent::OnBoostButtonReleased()
+{
+	mIsBoostRunning = false;
+	GetWorld()->GetTimerManager().ClearTimer(mBoostTimerHandle);
+	BoostFire();
+	mBoostPower = 0.0f;
+	if (Character && Character->GetController()) {
+		AFirstPersonPlayerController *p = Cast<AFirstPersonPlayerController>(Character->GetController());
+		if (p) {
+			p->SetBoostShotPower(0.0f);
+		}
+	}
+	UE_LOG(LogTemp, Warning, TEXT("OnBoostButtonReleased"));
+}
+void UTP_WeaponComponent::OnUpdateBoost()
+{
+	float elapsedTime = GetWorld()->GetTimeSeconds() - mBoostStartTime;
+	float power = elapsedTime / 1.0f;
+	mBoostPower = FMath::Clamp(power, 0.0f, 1.0f);
+
+	//UE_LOG(LogTemp, Warning, TEXT("Boost Progress: %f"), power);
+	if (Character && Character->GetController()) {
+		AFirstPersonPlayerController *p = Cast<AFirstPersonPlayerController>(Character->GetController());
+		if (p) {
+			p->SetBoostShotPower(mBoostPower);
+		}
+	}
+}
+void UTP_WeaponComponent::OnUpdateBoostShot()
+{
+	UWorld *const World = GetWorld();
+	if (mNumBoostShots > 0) {
+		AFirstPersonPlayerController *PlayerController = Cast<AFirstPersonPlayerController>(Character->GetController());
+
+		// 弾が飛ぶ向きを取得
+		const FRotator SpawnRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
+
+		// バラけさせる
+		FRotator spreadDir = SpawnRotation;
+		spreadDir.Yaw += FMath::RandRange(-30.0f, 30.0f);	// 左右
+		spreadDir.Pitch += FMath::RandRange(-15.0f, 15.0f);	// 上下
+
+		// 発射位置
+		const FVector SpawnLocation = GetOwner()->GetActorLocation() + SpawnRotation.RotateVector(MuzzleOffset);
+
+		//Set Spawn Collision Handling Override
+		FActorSpawnParameters ActorSpawnParams;
+		ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+
+		// Spawn the projectile at the muzzle
+		AFirstPersonProjectile *projectile = World->SpawnActor<AFirstPersonProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+		if (projectile) {
+			projectile->SetTimeAttackMode(PlayerController->IsTimeAttackMode());
+			projectile->SetSuperProjectileMode(true);
+
+			// コールバック設定
+			AGameModeBase *gm = World->GetAuthGameMode();
+			if (gm) {
+				ATimeAttackGameMode *timeAttack = Cast<ATimeAttackGameMode>(gm);
+				if (timeAttack) {
+					timeAttack->SetOnGetScoreCallback(projectile);
+				}
+			}
+		}
+
+		// Try and play the sound if specified
+		if (FireSound != nullptr)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, FireSound, Character->GetActorLocation());
+		}
+
+		// Try and play a firing animation if specified
+		if (FireAnimation != nullptr)
+		{
+			// Get the animation object for the arms mesh
+			UAnimInstance *AnimInstance = Character->GetMesh1P()->GetAnimInstance();
+			if (AnimInstance != nullptr)
+			{
+				AnimInstance->Montage_Play(FireAnimation, 1.f);
+			}
+		}
+
+		// 減らす 
+		mNumBoostShots--;
+	}
+	else {
+		World->GetTimerManager().ClearTimer(mBoostShotTimerHandle);
 	}
 }

@@ -38,6 +38,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	class UInputAction* FireAction;
 
+	/** Boost Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	class UInputAction *BoostAction;
+
 	/** Sets default values for this component's properties */
 	UTP_WeaponComponent();
 
@@ -49,6 +53,30 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	void Fire();
 
+
+	// êVãKí«â¡ÅBí∑âüÇµÇ‘Ç¡Çœ 
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void BoostFire();
+
+
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void OnBoostButtonPressed();
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void OnBoostButtonReleased();
+
+	FTimerHandle	mBoostTimerHandle;
+	FTimerHandle	mBoostShotTimerHandle;
+	float	mBoostStartTime;
+	float	mBoostPower;
+	bool	mIsBoostRunning;
+	int		mNumBoostShots;
+
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void OnUpdateBoost();
+
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void OnUpdateBoostShot();
+
 protected:
 	/** Ends gameplay for this component. */
 	UFUNCTION()
@@ -57,4 +85,5 @@ protected:
 private:
 	/** The Character holding this weapon*/
 	AFirstPersonCharacter* Character;
+
 };

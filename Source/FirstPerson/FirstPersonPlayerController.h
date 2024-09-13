@@ -21,6 +21,7 @@ public:
 	AFirstPersonPlayerController();
 
 	bool IsTimeAttackMode();
+	void SetBoostShotPower(float power);
 	
 protected:
 

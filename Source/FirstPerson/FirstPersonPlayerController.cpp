@@ -5,6 +5,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Engine/LocalPlayer.h"
 #include "TimeAttackGameMode.h"
+#include "DefaultHUD.h"
 
 
 AFirstPersonPlayerController::AFirstPersonPlayerController()
@@ -32,5 +33,13 @@ void AFirstPersonPlayerController::BeginPlay()
 	// ƒQ[ƒ€ƒ‚[ƒhŽæ“¾ 
 	AGameModeBase *gm = GetWorld()->GetAuthGameMode();
 	mIsTimeAttackMode = (gm && Cast<ATimeAttackGameMode>(gm));
+}
+void AFirstPersonPlayerController::SetBoostShotPower(float power)
+{
+	power = FMath::Clamp(power, 0.0f, 1.0f);
+	ADefaultHUD *hud = Cast<ADefaultHUD>(GetHUD());
+	if (hud) {
+		hud->SetPower(power);
+	}
 }
 

@@ -43,7 +43,7 @@ void AFirstPersonProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherAc
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
 	{
 		if (mIsSuperProjectile) {
-
+			OtherComp->AddImpulseAtLocation(GetVelocity() * 50.0f, GetActorLocation());
 		}
 		else {
 			OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
