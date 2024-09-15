@@ -10,6 +10,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
+#include "DefaultHUD.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -91,5 +92,16 @@ void AFirstPersonCharacter::Look(const FInputActionValue& Value)
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
+	}
+}
+
+void AFirstPersonCharacter::NotifyPickUpRifle()
+{
+	APlayerController *p = Cast<APlayerController>(GetController());
+	if (p) {
+		ADefaultHUD *hud = Cast<ADefaultHUD>(p->GetHUD());
+		if (hud) {
+			hud->DisponGauge();
+		}
 	}
 }

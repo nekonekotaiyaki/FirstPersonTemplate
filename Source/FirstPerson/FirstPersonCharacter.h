@@ -67,5 +67,7 @@ public:
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
+	// e‚ğE‚Á‚½‚Æ‚«‚ÉŒÄ‚Ño‚· 
+	void NotifyPickUpRifle();
 };
 
