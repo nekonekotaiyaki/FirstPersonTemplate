@@ -28,7 +28,7 @@ void ATimeAttackHUD::BeginPlay()
 }
 void ATimeAttackHUD::DrawHUD()
 {
-	// NOP
+	Super::DrawHUD();
 }
 
 
