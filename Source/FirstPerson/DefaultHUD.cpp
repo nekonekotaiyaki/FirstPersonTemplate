@@ -7,6 +7,8 @@
 #include "Components/ProgressBar.h"
 #include "Components/Image.h"
 #include "Kismet/GameplayStatics.h"
+#include "Engine/Canvas.h"
+#include "CanvasItem.h"
 #include "FirstPersonGameInstance.h"
 
 #define	HIGH_SCORE_DEFAULT	(20)
@@ -52,6 +54,9 @@ void ADefaultHUD::BeginPlay()
 	}
 
 	// 非表示 
+	if (mUIPowerGauge) {
+		mUIPowerGauge->SetVisibility(ESlateVisibility::Hidden);
+	}
 	if (mUITimerSec) {
 		mUITimerSec->SetVisibility(ESlateVisibility::Hidden);
 	}
@@ -89,6 +94,18 @@ void ADefaultHUD::DrawHUD()
 			nullptr,
 			mSwitchingCountTextScale);
 	}
+
+	// ゲージが出ているときはレティクルを表示する 
+	if (mUIPowerGauge && mUIPowerGauge->IsVisible()) {
+		FVector2D center = FVector2D(Canvas->SizeX, Canvas->SizeY) * 0.5f;
+		DrawText(
+			TEXT("+"),
+			FLinearColor::White,
+			center.X,
+			center.Y,
+			nullptr,
+			2.0f);
+	}
 }
 
 void ADefaultHUD::SetSwitchingTime(const FString &text, const FVector2D &pos, float scale)
@@ -122,6 +139,12 @@ void ADefaultHUD::SetPower(float percent)
 {
 	if (mUIPowerGauge) {
 		mUIPowerGauge->SetPercent(percent);
+	}
+}
+void ADefaultHUD::DisponGauge()
+{
+	if (mUIPowerGauge) {
+		mUIPowerGauge->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 

@@ -30,6 +30,8 @@ public:
 	void SetScore(int score);
 	void SetPower(float percent);
 
+	void DisponGauge();
+
 	int GetDefaultHighScore();
 
 	void StartFadeOut(float duration, FOnFadeOutDelegate delegate);
