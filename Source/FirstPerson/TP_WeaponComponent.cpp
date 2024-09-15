@@ -159,7 +159,7 @@ void UTP_WeaponComponent::BoostFire()
 			mNumBoostShots = FMath::CeilToInt(mBoostPower * 10.0f);
 			
 			// スポーン時に衝突するのでタイミングをずらす 
-			const float GAP = 0.05f;
+			const float GAP = 0.1f;
 			World->GetTimerManager().SetTimer(
 				mBoostShotTimerHandle,
 				this,
@@ -220,8 +220,11 @@ void UTP_WeaponComponent::OnUpdateBoostShot()
 
 		// バラけさせる
 		FRotator spreadDir = SpawnRotation;
-		spreadDir.Yaw += FMath::RandRange(-30.0f, 30.0f);	// 左右
+		spreadDir.Yaw += FMath::RandRange(-15.0f, 15.0f);	// 左右
 		spreadDir.Pitch += FMath::RandRange(-15.0f, 15.0f);	// 上下
+		if (spreadDir.Pitch < -10.0f) {
+			spreadDir.Pitch += 10.0f;
+		}
 
 		// 発射位置
 		const FVector SpawnLocation = GetOwner()->GetActorLocation() + SpawnRotation.RotateVector(MuzzleOffset);
@@ -231,7 +234,7 @@ void UTP_WeaponComponent::OnUpdateBoostShot()
 		ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
 		// Spawn the projectile at the muzzle
-		AFirstPersonProjectile *projectile = World->SpawnActor<AFirstPersonProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+		AFirstPersonProjectile *projectile = World->SpawnActor<AFirstPersonProjectile>(ProjectileClass, SpawnLocation, spreadDir, ActorSpawnParams);
 		if (projectile) {
 			projectile->SetTimeAttackMode(PlayerController->IsTimeAttackMode());
 			projectile->SetSuperProjectileMode(true);
