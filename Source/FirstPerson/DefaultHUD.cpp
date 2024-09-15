@@ -77,7 +77,7 @@ void ADefaultHUD::BeginPlay()
 		SetScore(gameInst->Score());
 		SetHigh(gameInst->High());
 	}
-	UE_LOG(LogTemp, Warning, TEXT("ADefaultHUD::BeginPlay!"));
+	//UE_LOG(LogTemp, Warning, TEXT("ADefaultHUD::BeginPlay!"));
 }
 
 

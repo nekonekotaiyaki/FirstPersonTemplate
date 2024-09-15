@@ -46,7 +46,7 @@ void AGameModeSwitchObject::BeginPlay()
 		}
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("BeginPlay!!!!!!"));
+	//UE_LOG(LogTemp, Warning, TEXT("BeginPlay!!!!!!"));
 }
 
 // Called every frame
@@ -154,7 +154,7 @@ bool AGameModeSwitchObject::ChangeColorToDefault()
 		FLinearColor start = FLinearColor::Green;
 		FLinearColor current = FMath::Lerp(start, target, scalar);
 		mMaterialHandle->SetVectorParameterValue(FName("EmissiveColor"), current);
-		UE_LOG(LogTemp, Warning, TEXT("scalar=%f"), scalar);
+		//UE_LOG(LogTemp, Warning, TEXT("scalar=%f"), scalar);
 		return (scalar <= 0.0f);
 	}
 	return (false);

@@ -179,7 +179,7 @@ void UTP_WeaponComponent::OnBoostButtonPressed()
 		&UTP_WeaponComponent::OnUpdateBoost,
 		BOOST_TIMER_SPEED,
 		true);
-	UE_LOG(LogTemp, Warning, TEXT("OnBoostButtonPressed"));
+	//UE_LOG(LogTemp, Warning, TEXT("OnBoostButtonPressed"));
 }
 void UTP_WeaponComponent::OnBoostButtonReleased()
 {
@@ -193,7 +193,7 @@ void UTP_WeaponComponent::OnBoostButtonReleased()
 			p->SetBoostShotPower(0.0f);
 		}
 	}
-	UE_LOG(LogTemp, Warning, TEXT("OnBoostButtonReleased"));
+	//UE_LOG(LogTemp, Warning, TEXT("OnBoostButtonReleased"));
 }
 void UTP_WeaponComponent::OnUpdateBoost()
 {

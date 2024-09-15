@@ -26,7 +26,7 @@ AFirstPersonGameMode::AFirstPersonGameMode()
 	mIsRunning = false;
 	mHUD = nullptr;
 
-	UE_LOG(LogTemp, Warning, TEXT("AFristPersonGameMode::constructor"));
+	//UE_LOG(LogTemp, Warning, TEXT("AFristPersonGameMode::constructor"));
 }
 
 
@@ -39,7 +39,7 @@ void AFirstPersonGameMode::BeginPlay()
 		mHUD = p->GetHUD();
 	}
 	
-	UE_LOG(LogTemp, Warning, TEXT("AFristPersonGameMode::BeginPlay"));
+	//UE_LOG(LogTemp, Warning, TEXT("AFristPersonGameMode::BeginPlay"));
 }
 
 void AFirstPersonGameMode::SetTextLocation(const FVector2D &loc)

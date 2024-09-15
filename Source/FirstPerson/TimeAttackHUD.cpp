@@ -24,7 +24,7 @@ void ATimeAttackHUD::BeginPlay()
 	if (mUITimerMsec) {
 		mUITimerMsec->SetVisibility(ESlateVisibility::Visible);
 	}
-	UE_LOG(LogTemp, Warning, TEXT("ATimeAttackHUD::BeginPlay!"));
+	//UE_LOG(LogTemp, Warning, TEXT("ATimeAttackHUD::BeginPlay!"));
 }
 void ATimeAttackHUD::DrawHUD()
 {

@@ -67,7 +67,7 @@ void ATimeAttackGameMode::BeginPlay()
 		SPAN,
 		true);
 
-	UE_LOG(LogTemp, Warning, TEXT("ATimeAttackGameMode::BeginPlay!"));
+	//UE_LOG(LogTemp, Warning, TEXT("ATimeAttackGameMode::BeginPlay!"));
 }
 
 int ATimeAttackGameMode::GetSec()
@@ -104,7 +104,7 @@ void ATimeAttackGameMode::OnTimerUpdate()
 	if (mRemainingTime <= 0.0f) {
 		mRemainingTime = 0.0f;
 		GetWorld()->GetTimerManager().ClearTimer(mTimerHandle);
-		UE_LOG(LogTemp, Warning, TEXT("TimeAttackEnd"));
+		//UE_LOG(LogTemp, Warning, TEXT("TimeAttackEnd"));
 
 		if (hud) {
 			FOnFadeOutDelegate delegate = FOnFadeOutDelegate::CreateUObject(this, &ATimeAttackGameMode::OnEndFadeOut);

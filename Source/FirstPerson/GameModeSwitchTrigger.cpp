@@ -103,7 +103,7 @@ void AGameModeSwitchTrigger::OnOverlapBegin(
 			}
 		}
 	}
-	UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin"));
+	//UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin"));
 }
 
 void AGameModeSwitchTrigger::OnOverlapEnd(
@@ -126,7 +126,7 @@ void AGameModeSwitchTrigger::OnOverlapEnd(
 			}
 		}
 	}
-	UE_LOG(LogTemp, Warning, TEXT("OnOverlapEnd"));
+	//UE_LOG(LogTemp, Warning, TEXT("OnOverlapEnd"));
 }
 
 void AGameModeSwitchTrigger::OnStartTimeAttack()
@@ -134,11 +134,11 @@ void AGameModeSwitchTrigger::OnStartTimeAttack()
 	if (mGameMode) {
 		AFirstPersonGameMode *gm = Cast<AFirstPersonGameMode>(mGameMode);
 		if (gm) {
-			UE_LOG(LogTemp, Warning, TEXT("OnStartTimeAttack!!!!!!"));
+			//UE_LOG(LogTemp, Warning, TEXT("OnStartTimeAttack!!!!!!"));
 			gm->GotoTimeAttackGameMode();
 		}
 	}
-	UE_LOG(LogTemp, Warning, TEXT("OnStartTimeAttack"));
+	//UE_LOG(LogTemp, Warning, TEXT("OnStartTimeAttack"));
 }
 
 
